@@ -11,6 +11,19 @@ class Team extends Model
 
     protected $fillable = ['name', 'strength'];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saving(function ($team) {
+            if ($team->strength > 100) {
+                $team->strength = 100;
+            } elseif ($team->strength < 1) {
+                $team->strength = 1;
+            }
+        });
+    }
+
     public function homeMatches()
     {
         return $this->hasMany(GameMatch::class, 'home_team_id');

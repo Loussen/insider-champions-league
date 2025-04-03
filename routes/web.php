@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\LeagueController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', [LeagueController::class, 'index'])->name('league.index');
 Route::post('/fixtures/generate', [LeagueController::class, 'generateFixtures'])->name('league.fixtures.generate');

@@ -29,19 +29,25 @@ class LeagueService
 
     public function simulateMatch(GameMatch $match)
     {
+        if ($match->played) {
+            return $match;
+        }
+
         $homeTeam = $match->homeTeam;
         $awayTeam = $match->awayTeam;
 
         $homeGoals = $this->calculateGoals($homeTeam->strength);
         $awayGoals = $this->calculateGoals($awayTeam->strength);
 
-        $match->update([
+        $match->forceFill([
             'home_team_score' => $homeGoals,
             'away_team_score' => $awayGoals,
             'played' => true
-        ]);
+        ])->save();
 
         $this->updateLeagueTable($homeTeam, $awayTeam, $homeGoals, $awayGoals);
+
+        return $match;
     }
 
     private function calculateGoals($strength)
@@ -100,14 +106,11 @@ class LeagueService
         $predictions = [];
 
         foreach ($teams as $team) {
-            $chance = ($team->strength * 0.4) +
-                     ($team->leagueTable->points * 0.4) +
+            $chance = ($team->strength * 0.4) + 
+                     ($team->leagueTable->points * 0.4) + 
                      ($team->leagueTable->goal_difference * 0.2);
-
-            $predictions[$team->id] = [
-                'team' => $team->name,
-                'chance' => round($chance, 1)
-            ];
+            
+            $predictions[$team->name] = round($chance, 1);
         }
 
         arsort($predictions);

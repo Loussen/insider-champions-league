@@ -50,10 +50,10 @@
             <div class="bg-white rounded-lg shadow p-6">
                 <h2 class="text-xl font-semibold mb-4">Championship Predictions</h2>
                 <div class="space-y-4">
-                    @foreach($predictions as $prediction)
+                    @foreach($predictions as $team => $chance)
                     <div class="flex justify-between items-center">
-                        <span>{{ $prediction['team'] }}</span>
-                        <span class="font-bold">{{ $prediction['chance'] }}%</span>
+                        <span>{{ $team }}</span>
+                        <span class="font-bold">{{ $chance }}%</span>
                     </div>
                     @endforeach
                 </div>

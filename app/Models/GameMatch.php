@@ -20,6 +20,25 @@ class GameMatch extends Model
         'played'
     ];
 
+    protected $attributes = [
+        'played' => false
+    ];
+
+    protected $casts = [
+        'played' => 'boolean'
+    ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saving(function ($match) {
+            if ($match->home_team_id === $match->away_team_id) {
+                throw new \InvalidArgumentException('A team cannot play against itself');
+            }
+        });
+    }
+
     public function homeTeam()
     {
         return $this->belongsTo(Team::class, 'home_team_id');
